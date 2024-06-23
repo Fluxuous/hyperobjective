@@ -1,0 +1,21 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hyperobjective API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/chat": {
+      "post": {
+        "description": "Chat endpoint",
+        "responses": {
+          "200": {
+            "description": "Chat response"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

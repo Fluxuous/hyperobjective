@@ -1,0 +1,171 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("SUPABASE_POOL_URL")
+  directUrl = env("SUPABASE_DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model BillingAccount {
+  id                   String   @id              @default(cuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt       @default(now())
+  userId               String   @db.VarChar(255)
+  approved             Boolean  @default(false)
+  stripeCustomerId     String?  @db.VarChar(255)
+  stripeSubscriptionId String?  @db.VarChar(255)
+  private              Boolean  @default(false)
+  subscriptionUsageId  String?  @db.VarChar(255)
+  appIds               String[] @default([])
+}
+
+model DocumentUpload {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt           @default(now())
+  userId    String   @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  url       String   @db.VarChar(255)
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @db.VarChar(255)
+  runId     String   @db.VarChar(255)
+  feedback  String   @db.VarChar(255)
+}
+
+model Notification {
+  id           String   @id              @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt       @default(now())
+  userId       String   @db.VarChar(255)
+  message      String   @db.VarChar(255)
+  entityId     String   @db.VarChar(255)
+  entityKey    String   @db.VarChar(255)
+  entityAction String   @db.VarChar(255)
+}
+
+model ChatUsage {
+  id               String   @id              @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt       @default(now())
+  userId           String   @db.VarChar(255)
+  projectId            String?  @db.VarChar(255)
+  objectiveId      String?  @db.VarChar(255)
+  runId            String?  @db.VarChar(255)
+  model            String   @db.VarChar(255)
+  content          Json     @default("{}")
+  messages         Json     @default("[]")
+  promptTokens     Int      @db.Integer
+  promptTime       Float    @db.Real
+  completionTokens Int      @db.Integer
+  completionTime   Float    @db.Real
+  totalTokens      Int      @db.Integer
+  totalTime        Float    @db.Real
+  totalCost        Float    @db.Real
+}
+
+model Prompt {
+  id        String   @id              @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt       @default(now())
+  userId    String   @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  template  String   @db.VarChar(255)
+}
+
+model Cycle {
+  id        String   @id              @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt       @default(now())
+  userId    String   @db.VarChar(255)
+  projectId     String   @db.VarChar(255)
+  quarter   Int      @db.Integer
+  year      Int      @db.Integer
+}
+
+model Label {
+  id        String   @id              @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt       @default(now())
+  userId    String   @db.VarChar(255)
+  projectId     String   @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  color     String   @db.VarChar(255)
+}
+
+model KeyResult {
+  id          String   @id              @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt       @default(now())
+  userId      String   @db.VarChar(255)
+  projectId       String   @db.VarChar(255)
+  objectiveId String   @db.VarChar(255)
+  name        String   @db.VarChar(255)
+  type        String   @db.VarChar(255)
+  value       Float    @db.Real
+}
+
+model Chat {
+  id        String   @id              @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt       @default(now())
+  userId    String   @db.VarChar(255)
+  projectId     String?  @db.VarChar(255)
+  title     String   @db.VarChar(255)
+  path      String   @db.VarChar(255)
+  messages  Json     @default("[]")
+  sharePath String?  @db.VarChar(255)
+}
+
+model Objective {
+  id        String    @id              @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt       @default(now())
+  lastRunAt DateTime? @db.Timestamp
+  userId    String    @db.VarChar(255)
+  projectId     String    @db.VarChar(255)
+  outcome   String    @db.VarChar(255)
+  interval  String    @db.VarChar(255)
+  progress  Int       @db.Integer
+  labelId   String?   @db.VarChar(255)
+  parentId  String?   @db.VarChar(255)
+  cycleId   String?   @db.VarChar(255)
+}
+
+model Run {
+  id          String    @id              @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt       @default(now())
+  userId      String    @db.VarChar(255)
+  projectId       String    @db.VarChar(255)
+  objectiveId String    @db.VarChar(255)
+  completedAt DateTime? @db.Timestamp
+  inngestIds  String[]  @default([])
+  status      String    @db.VarChar(255)
+  tasks       Json      @default("[]")
+  outputUrl   String    @db.VarChar(255)
+  sharePath   String?   @db.VarChar(255)
+}
+
+model Project {
+  id              String   @id              @default(cuid())
+  userId          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt       @default(now())
+  name            String   @db.VarChar(512)
+  vision          String   @db.VarChar(2048)
+  strategy        String   @db.VarChar(2048)
+  budget          Float    @db.Real
+  private         Boolean  @default(false)
+  resourceIds     String[] @default([])
+  memberIds       String[] @default([])
+  contractAddress String?
+  ipfsUri         String?
+  sharePath       String?  @db.VarChar(255)
+}

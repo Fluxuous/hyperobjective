@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+. "$(dirname -- "$0")/_/husky.sh"
+
+pnpm lint:fix
+pnpm format:write
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm swagger
+pnpm knip
+
+# Hitting limits on plan so conserve
+#pnpm snyk
+
+git add -A
